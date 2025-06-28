@@ -6,26 +6,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       background: black;
       font-family: 'Orbitron', sans-serif;
       color: white;
-      overflow: hidden;
+      overflow-x: hidden;
     }
-
     canvas {
       position: fixed;
-      top: 0;
-      left: 0;
+      top: 0; left: 0;
       z-index: -1;
     }
-
     .form-container, .message-container {
       width: 90%;
       max-width: 400px;
@@ -37,20 +29,17 @@
       box-shadow: 0 0 30px red;
       animation: pulse 2s infinite;
     }
-
     @keyframes pulse {
       0% { box-shadow: 0 0 10px red; }
       50% { box-shadow: 0 0 30px red; }
       100% { box-shadow: 0 0 10px red; }
     }
-
     h2 {
       text-align: center;
       margin-bottom: 25px;
       color: red;
       font-size: 22px;
     }
-
     input, select, textarea, button {
       width: 100%;
       padding: 12px;
@@ -59,16 +48,13 @@
       border-radius: 8px;
       font-size: 16px;
     }
-
     select, textarea {
       background-color: #111;
       color: #fff;
     }
-
     textarea {
       resize: none;
     }
-
     button {
       background-color: red;
       color: white;
@@ -76,20 +62,13 @@
       cursor: pointer;
       transition: background 0.3s ease;
     }
-
     button:hover {
       background-color: darkred;
     }
+    audio { display: none; }
+    .hidden { display: none; }
 
-    audio {
-      display: none;
-    }
-
-    .hidden {
-      display: none;
-    }
-
-    /* Loader styles */
+    /* Loader */
     .loader-wrapper {
       position: fixed;
       top: 0; left: 0;
@@ -101,12 +80,10 @@
       align-items: center;
       z-index: 10000;
     }
-
     .loader {
       display: flex;
       gap: 20px;
     }
-
     .dot {
       width: 20px;
       height: 20px;
@@ -115,24 +92,20 @@
       box-shadow: 0 0 10px #00f6ff, 0 0 20px #00f6ff;
       animation: float 1.5s ease-in-out infinite;
     }
-
     .dot:nth-child(2) {
       animation-delay: 0.2s;
       background: #00ff9d;
       box-shadow: 0 0 10px #00ff9d, 0 0 20px #00ff9d;
     }
-
     .dot:nth-child(3) {
       animation-delay: 0.4s;
       background: #ff00ff;
       box-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff;
     }
-
     @keyframes float {
       0%, 100% { transform: translateY(0); opacity: 0.7; }
       50% { transform: translateY(-20px); opacity: 1; }
     }
-
     .loader-text {
       margin-top: 40px;
       font-size: 1.2rem;
@@ -140,35 +113,60 @@
       text-shadow: 0 0 5px #00f6ff;
       animation: blink 2s infinite;
     }
-
     @keyframes blink {
       0%, 100% { opacity: 1; }
       50% { opacity: 0.4; }
+    }
+
+    /* Animated Ticket ID */
+    #ticketDisplay {
+      margin-top: 20px;
+      font-size: 18px;
+      color: #00ffcc;
+      text-align: center;
+      animation: fadeInUp 1s ease forwards;
+    }
+
+    @keyframes fadeInUp {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    #contactLine {
+      text-align: center;
+      margin-top: 10px;
+      color: #ff8080;
+      font-size: 16px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.6s ease;
+    }
+
+    #contactLine a {
+      color: #ff4d4d;
+      text-decoration: underline;
     }
   </style>
 </head>
 <body>
 
-  <!-- 🎵 Background Music -->
   <audio autoplay loop>
     <source src="https://dl.sndup.net/bn4t/letmedownslowly.mp3" type="audio/mp3">
   </audio>
 
-  <!-- 🔄 Loader -->
   <div class="loader-wrapper" id="loader">
     <div class="loader">
       <div class="dot"></div>
       <div class="dot"></div>
       <div class="dot"></div>
     </div>
-    <div class="loader-text">OWNER ALPHA FOURTEEN</div>
+    <div class="loader-text"></div>
   </div>
 
-  <!-- 🟢 Matrix Background -->
   <canvas id="matrix"></canvas>
 
-  <!-- 📝 Booking Form -->
   <div class="form-container hidden" id="bookingForm">
+    <h2>𝗪𝗘𝗟𝗖𝗢𝗠𝗘<h2>
     <h2>𝗕𝗢𝗢𝗞 𝗬𝗢𝗨𝗥 𝗧𝗜𝗖𝗞𝗘𝗧</h2>
     <input type="text" id="name" placeholder="𝗙𝘂𝗹𝗹 𝗡𝗮𝗺𝗲" required>
     <input type="tel" id="whatsapp" placeholder="𝗪𝗵𝘁𝘀𝗮𝗽𝗽 𝗡𝘂𝗺𝗯𝗲𝗿" required>
@@ -179,31 +177,33 @@
       <option value="2000">Rs. 2000</option>
     </select>
     <textarea id="note" disabled rows="5">
+OWNER Theekshana
 Welcome to the official site of 6 Frame Films — your gateway to powerful short films and creative storytelling. Explore our latest projects, updates, and more. Clean and cinematic, this website is proudly designed by 6Frame Films.
     </textarea>
     <button onclick="showMessage()">𝗦𝗨𝗕𝗠𝗜𝗧</button>
   </div>
 
-  <!-- 📩 Send Message Page -->
   <div class="message-container hidden" id="messageBox">
     <h2>📨 Send Message</h2>
     <p>Click below to send your booking to admin.</p>
     <button id="sendBtn">Send Message</button>
+    <div id="ticketDisplay"></div>
+    <p id="contactLine">
+      Contact us for more information. 
+      <a href="https://wa.me/94778080044">+94778080044</a>
+    </p>
   </div>
 
-  <!-- 🧠 Scripts -->
   <script>
-    // Matrix Animation
+    // Matrix effect
     const canvas = document.getElementById('matrix');
     const ctx = canvas.getContext('2d');
     canvas.height = window.innerHeight;
     canvas.width = window.innerWidth;
-
     const chars = 'アカサタナハマヤラワンABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'.split('');
     const fontSize = 14;
     const columns = canvas.width / fontSize;
     const drops = Array.from({ length: columns }).fill(1);
-
     function drawMatrix() {
       ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -220,7 +220,6 @@ Welcome to the official site of 6 Frame Films — your gateway to powerful short
     }
     setInterval(drawMatrix, 40);
 
-    // ✅ Loader hide after 5000ms
     window.addEventListener('load', () => {
       setTimeout(() => {
         document.getElementById('loader').style.display = 'none';
@@ -228,7 +227,6 @@ Welcome to the official site of 6 Frame Films — your gateway to powerful short
       }, 5000);
     });
 
-    // Show Send Message
     function showMessage() {
       const name = document.getElementById('name').value.trim();
       const whatsapp = document.getElementById('whatsapp').value.trim();
@@ -241,7 +239,7 @@ Welcome to the official site of 6 Frame Films — your gateway to powerful short
         return;
       }
 
-      const msg = ` *New Ticket Booked!*\n\n👤 Name: ${name}\n📞 WhatsApp: ${whatsapp}\n🎟️ Ticket: Rs. ${ticket}\n🆔 Ticket ID: ${ticketId}\n📝 Note: ${note}`;
+      const msg = `*New Ticket Booked!*\n\n👤 Name: ${name}\n📞 WhatsApp: ${whatsapp}\n🎟️ Ticket: Rs. ${ticket}\n🆔 Ticket ID: ${ticketId}\n📝 Note: ${note}`;
       const url = `https://wa.me/94778080044?text=${encodeURIComponent(msg)}`;
 
       document.getElementById('sendBtn').onclick = () => {
@@ -250,6 +248,12 @@ Welcome to the official site of 6 Frame Films — your gateway to powerful short
 
       document.getElementById('bookingForm').classList.add('hidden');
       document.getElementById('messageBox').classList.remove('hidden');
+      document.getElementById('ticketDisplay').innerText = `Your Ticket ID: ${ticketId}`;
+
+      // Show contact info after animation
+      const contactLine = document.getElementById('contactLine');
+      contactLine.style.opacity = '1';
+      contactLine.style.transform = 'translateY(0)';
     }
   </script>
 
