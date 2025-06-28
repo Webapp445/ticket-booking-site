@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Book Your Ticket</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: black;
+      font-family: 'Orbitron', sans-serif;
+      color: white;
+      overflow: hidden;
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -1;
+    }
+
+    .form-container, .message-container {
+      width: 90%;
+      max-width: 400px;
+      margin: 100px auto;
+      background: rgba(0, 0, 0, 0.8);
+      border: 2px solid red;
+      border-radius: 15px;
+      padding: 30px;
+      box-shadow: 0 0 30px red;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 10px red; }
+      50% { box-shadow: 0 0 30px red; }
+      100% { box-shadow: 0 0 10px red; }
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 25px;
+      color: red;
+      font-size: 22px;
+    }
+
+    input, select, textarea, button {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    select, textarea {
+      background-color: #111;
+      color: #fff;
+    }
+
+    textarea {
+      resize: none;
+    }
+
+    button {
+      background-color: red;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background-color: darkred;
+    }
+
+    audio {
+      display: none;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    /* Loader styles */
+    .loader-wrapper {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: radial-gradient(circle, #111 0%, #000 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 10000;
+    }
+
+    .loader {
+      display: flex;
+      gap: 20px;
+    }
+
+    .dot {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #00f6ff;
+      box-shadow: 0 0 10px #00f6ff, 0 0 20px #00f6ff;
+      animation: float 1.5s ease-in-out infinite;
+    }
+
+    .dot:nth-child(2) {
+      animation-delay: 0.2s;
+      background: #00ff9d;
+      box-shadow: 0 0 10px #00ff9d, 0 0 20px #00ff9d;
+    }
+
+    .dot:nth-child(3) {
+      animation-delay: 0.4s;
+      background: #ff00ff;
+      box-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); opacity: 0.7; }
+      50% { transform: translateY(-20px); opacity: 1; }
+    }
+
+    .loader-text {
+      margin-top: 40px;
+      font-size: 1.2rem;
+      color: #00f6ff;
+      text-shadow: 0 0 5px #00f6ff;
+      animation: blink 2s infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 🎵 Background Music -->
+  <audio autoplay loop>
+    <source src="https://dl.sndup.net/bn4t/letmedownslowly.mp3" type="audio/mp3">
+  </audio>
+
+  <!-- 🔄 Loader -->
+  <div class="loader-wrapper" id="loader">
+    <div class="loader">
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+    <div class="loader-text">OWNER ALPHA FOURTEEN</div>
+  </div>
+
+  <!-- 🟢 Matrix Background -->
+  <canvas id="matrix"></canvas>
+
+  <!-- 📝 Booking Form -->
+  <div class="form-container hidden" id="bookingForm">
+    <h2>𝗕𝗢𝗢𝗞 𝗬𝗢𝗨𝗥 𝗧𝗜𝗖𝗞𝗘𝗧</h2>
+    <input type="text" id="name" placeholder="𝗙𝘂𝗹𝗹 𝗡𝗮𝗺𝗲" required>
+    <input type="tel" id="whatsapp" placeholder="𝗪𝗵𝘁𝘀𝗮𝗽𝗽 𝗡𝘂𝗺𝗯𝗲𝗿" required>
+    <select id="ticket" required>
+      <option value="">𝗣𝗶𝗰𝗸 𝗨𝗽 𝗧𝗵𝗲 𝗧𝗶𝗰𝗸𝗲𝘁</option>
+      <option value="500">Rs. 500</option>
+      <option value="1000">Rs. 1000</option>
+      <option value="2000">Rs. 2000</option>
+    </select>
+    <textarea id="note" disabled rows="5">
+Welcome to the official site of 6 Frame Films — your gateway to powerful short films and creative storytelling. Explore our latest projects, updates, and more. Clean and cinematic, this website is proudly designed by 6Frame Films.
+    </textarea>
+    <button onclick="showMessage()">𝗦𝗨𝗕𝗠𝗜𝗧</button>
+  </div>
+
+  <!-- 📩 Send Message Page -->
+  <div class="message-container hidden" id="messageBox">
+    <h2>📨 Send Message</h2>
+    <p>Click below to send your booking to admin.</p>
+    <button id="sendBtn">Send Message</button>
+  </div>
+
+  <!-- 🧠 Scripts -->
+  <script>
+    // Matrix Animation
+    const canvas = document.getElementById('matrix');
+    const ctx = canvas.getContext('2d');
+    canvas.height = window.innerHeight;
+    canvas.width = window.innerWidth;
+
+    const chars = 'アカサタナハマヤラワンABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'.split('');
+    const fontSize = 14;
+    const columns = canvas.width / fontSize;
+    const drops = Array.from({ length: columns }).fill(1);
+
+    function drawMatrix() {
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = 'rgba(255, 0, 0, 0.3)';
+      ctx.font = fontSize + 'px monospace';
+      for (let i = 0; i < drops.length; i++) {
+        const text = chars[Math.floor(Math.random() * chars.length)];
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
+        }
+        drops[i]++;
+      }
+    }
+    setInterval(drawMatrix, 40);
+
+    // ✅ Loader hide after 5000ms
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        document.getElementById('loader').style.display = 'none';
+        document.getElementById('bookingForm').classList.remove('hidden');
+      }, 5000);
+    });
+
+    // Show Send Message
+    function showMessage() {
+      const name = document.getElementById('name').value.trim();
+      const whatsapp = document.getElementById('whatsapp').value.trim();
+      const ticket = document.getElementById('ticket').value;
+      const note = document.getElementById('note').value.trim();
+      const ticketId = 'TKT-' + Math.floor(1000 + Math.random() * 9000);
+
+      if (!name || !whatsapp || !ticket) {
+        alert('කරුණාකර සියලු විස්තර සපුරන්න!');
+        return;
+      }
+
+      const msg = ` *New Ticket Booked!*\n\n👤 Name: ${name}\n📞 WhatsApp: ${whatsapp}\n🎟️ Ticket: Rs. ${ticket}\n🆔 Ticket ID: ${ticketId}\n📝 Note: ${note}`;
+      const url = `https://wa.me/94778080044?text=${encodeURIComponent(msg)}`;
+
+      document.getElementById('sendBtn').onclick = () => {
+        window.open(url, '_blank');
+      };
+
+      document.getElementById('bookingForm').classList.add('hidden');
+      document.getElementById('messageBox').classList.remove('hidden');
+    }
+  </script>
+
+</body>
+</html>
